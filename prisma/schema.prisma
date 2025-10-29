@@ -41,7 +41,7 @@ model Product {
   id             String         @id @default(uuid())
   name           String
   description    String
-  price          Int
+  price          Float
   imageUrl       String
   ingredients    String[]
   restaurant     Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
@@ -63,6 +63,8 @@ model Order {
   orderProducts     OrderProduct[]
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+  customerName      String
+  customerCpf       String
 }
 
 model OrderProduct {
@@ -72,6 +74,7 @@ model OrderProduct {
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId   Int
   quantity  Int
+  price Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
