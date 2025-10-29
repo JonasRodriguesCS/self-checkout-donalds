@@ -69,7 +69,7 @@ const CpfForm = () => {
         />
     <DrawerFooter>
       <Button className="rounded-full w-full" variant="destructive">Confirmar</Button>
-      <DrawerClose>
+      <DrawerClose asChild>
         <Button variant="outline" className="rounded-full w-full" onClick={handleCancel}>Cancelar</Button>
       </DrawerClose>
     </DrawerFooter>
