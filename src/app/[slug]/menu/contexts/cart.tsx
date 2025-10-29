@@ -11,23 +11,25 @@ export interface CartProduct
 export interface ICartContext {
   isOpen: boolean;
   products: CartProduct[];
+  total: number;
+  totalQuantity: number;
   toggleCart: () => void;
   addProduct: (product: CartProduct) => void;
   decreaseProductQuantity: (productId: string) => void;
   increaseProductQuantity: (productId: string) => void;
   removeProduct: (productId: string) => void;
-  total: number;
 }
 
 export const CartContext = createContext<ICartContext>({
   isOpen: false,
+  total: 0,
+  totalQuantity: 0,
   products: [],
   toggleCart: () => {},
   addProduct: () => {},
   decreaseProductQuantity: () => {},
-  increaseProductQuantity: () => {},  
+  increaseProductQuantity: () => {},
   removeProduct: () => {},
-  total: 0,
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -37,13 +39,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const total = products.reduce((acc, product) => {
     return acc + product.price * product.quantity;
   }, 0);
-
+  const totalQuantity = products.reduce((acc, product) => {
+    return acc + product.quantity;
+  }, 0);
   const toggleCart = () => {
     setIsOpen((prev) => !prev);
   };
   const addProduct = (product: CartProduct) => {
-    // Verifica se o produto já está na sacola
-    // Se não estiver, adiciona o produto à sacola
     const productIsAlreadyOnTheCart = products.some(
       (prevProduct) => prevProduct.id === product.id,
     );
@@ -62,14 +64,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       });
     });
   };
-
   const decreaseProductQuantity = (productId: string) => {
     setProducts((prevProducts) => {
-      return prevProducts.map(prevProduct => {
+      return prevProducts.map((prevProduct) => {
         if (prevProduct.id !== productId) {
           return prevProduct;
         }
-
         if (prevProduct.quantity === 1) {
           return prevProduct;
         }
@@ -77,22 +77,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       });
     });
   };
-
   const increaseProductQuantity = (productId: string) => {
     setProducts((prevProducts) => {
-      return prevProducts.map(prevProduct => {
+      return prevProducts.map((prevProduct) => {
         if (prevProduct.id !== productId) {
           return prevProduct;
         }
         return { ...prevProduct, quantity: prevProduct.quantity + 1 };
       });
     });
-  }
-
-  const removeProduct = (productId: string) => {
-    setProducts(prevProducts => prevProducts.filter(prevProduct => prevProduct.id !== productId));
   };
-
+  const removeProduct = (productId: string) => {
+    setProducts((prevProducts) =>
+      prevProducts.filter((prevProduct) => prevProduct.id !== productId),
+    );
+  };
   return (
     <CartContext.Provider
       value={{
@@ -104,6 +103,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         increaseProductQuantity,
         removeProduct,
         total,
+        totalQuantity,
       }}
     >
       {children}
