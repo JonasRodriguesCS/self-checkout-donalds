@@ -6,7 +6,12 @@ const prismaClient = new PrismaClient();
 
 const main = async () => {
   await prismaClient.$transaction(async (tx: any) => {
-    await tx.restaurant.deleteMany();
+    // ESTA LINHA DELETA TODOS OS DADOS (FSW Donalds e Sendai Pastéis) A CADA EXECUÇÃO
+    await tx.restaurant.deleteMany(); 
+
+    // --------------------------------------------------------------------------------
+    // --- SEÇÃO 1: RESTAURANTE FSW Donalds ---
+    // --------------------------------------------------------------------------------
     const restaurant = await tx.restaurant.create({
       data: {
         name: "FSW Donalds",
@@ -95,7 +100,7 @@ const main = async () => {
           menuCategoryId: combosCategory.id,
           restaurantId: restaurant.id,
           ingredients: [
-            "Pão escuro com gergelim",
+            "Pão escuro com gergilim",
             "Hambúrguer de carne 100% bovina",
             "Molho lácteo com queijo tipo cheddar",
             "Cebola ao molho shoyu",
@@ -175,7 +180,7 @@ const main = async () => {
           description:
             "Dois hambúrgueres (100% carne bovina), molho lácteo com queijo tipo cheddar, cebola ao molho shoyu e pão escuro com gergelim, acompanhamento e bebida.",
           ingredients: [
-            "Pão escuro com gergelim",
+            "Pão escuro com gergilim",
             "Hambúrguer de carne 100% bovina",
             "Molho lácteo com queijo tipo cheddar",
             "Cebola ao molho shoyu",
@@ -310,6 +315,306 @@ const main = async () => {
         },
       ],
     });
+
+    // --------------------------------------------------------------------------------
+    // --- SEÇÃO 2: NOVO RESTAURANTE - Sendai Pastéis (MENU COMPLETO) ---
+    // --------------------------------------------------------------------------------
+
+    // 1. Criação do Restaurante Sendai Pastéis
+    const restaurantSendai = await tx.restaurant.create({
+      data: {
+        name: "Sendai Pastéis",
+        slug: "sendai-pasteis",
+        description: "Sabor Nordestino em Dobro: Especialidades de Coalho, Cames e Doces Típicos.",
+        avatarImageUrl: "/images/sendai/logo-sendai.png", // Caminho Local Atualizado
+        coverImageUrl: "/images/sendai/foto-desfocada-de-supermercado-para-sua-publicidade_185193-110539.avif",       // Caminho Local Atualizado
+      },
+    });
+
+    // Caminho Único para Todas as Imagens de Pastéis
+    const commonPasteisImageUrl = "/images/sendai/img_1200_1.png";
+
+    // Categoria 1: Pastéis Simples
+    const pasteisSimplesCategory = await tx.menuCategory.create({
+      data: {
+        name: "Pastéis Simples",
+        restaurantId: restaurantSendai.id,
+      },
+    });
+
+    await tx.product.createMany({
+      data: [
+        {
+          name: "QUEIJO COALHO",
+          description: "Pastel de Coalho e Goiabada",
+          price: 9.00,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisSimplesCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Coalho", "Goiabada"],
+        },
+        {
+          name: "CARNE",
+          description: "Pastel de Carne Moída, Azeitona sem Caroço",
+          price: 9.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisSimplesCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Carne Moída", "Azeitona sem Caroço"],
+        },
+        {
+          name: "PIZZA",
+          description: "Pastel de Queijo Coalho, Presunto de Chester e Orégano",
+          price: 9.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisSimplesCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Queijo Coalho", "Presunto de Chester", "Orégano"],
+        },
+        {
+          name: "CAIPIRA",
+          description: "Pastel de Frango",
+          price: 9.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisSimplesCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Frango"],
+        },
+        {
+          name: "MUSSARELLA",
+          description: "Pastel de queijo mussarela",
+          price: 9.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisSimplesCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["MUSSARELLA"],
+        },
+        {
+          name: "QUEIJO PRATO",
+          description: "Pastel de queijo prato",
+          price: 9.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisSimplesCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["QUEIJO PRATO"],
+        },
+        {
+          name: "FRANGO COM CHEDDAR",
+          description: "Frango com cheddar",
+          price: 10.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisSimplesCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Frango", "Cheddar"],
+        },
+        {
+          name: "CALABRESA",
+          description: "Pastel de Coalho e Calabresa Moída",
+          price: 10.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisSimplesCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Coalho", "Calabresa Moída"],
+        },
+      ],
+    });
+
+    // Categoria 2: Pastéis Especiais com Requeijão
+    const pasteisEspeciaisRequeijaoCategory = await tx.menuCategory.create({
+      data: {
+        name: "Pastéis Especiais com Requeijão",
+        restaurantId: restaurantSendai.id,
+      },
+    });
+
+    await tx.product.createMany({
+      data: [
+        {
+          name: "TRÊS QUEIJOS",
+          description: "Pastel de Queijo Prato, Requeijão e Parmesão",
+          price: 10.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisRequeijaoCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Queijos Prato", "Requeijão", "Parmesão"],
+        },
+        {
+          name: "CHARQUE COM REQUEIJÃO",
+          description: "Pastel de charque com requeijão",
+          price: 10.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisRequeijaoCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Carne de Charque", "Requeijão"],
+        },
+        {
+          name: "FRANGO COM REQUEIJÃO",
+          description: "Pastel de frango com requeijão",
+          price: 10.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisRequeijaoCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Carne de frango", "Requeijão"],
+        },
+        {
+          name: "CAMARÃO COM REQUEIJÃO",
+          description: "Pastel de Camarão com requeijão",
+          price: 10.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisRequeijaoCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Camarão", "Requeijão"],
+        },
+        {
+          name: "MEDALHÃO COM REQUEIJÃO",
+          description: "Pastel de Carne Moída, Bacon e Requeijão",
+          price: 10.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisRequeijaoCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Carne Moída", "Bacon", "Requeijão"],
+        },
+      ],
+    });
+
+    // Categoria 3: Pastéis Especiais
+    const pasteisEspeciaisCategory = await tx.menuCategory.create({
+      data: {
+        name: "Pastéis Especiais",
+        restaurantId: restaurantSendai.id,
+      },
+    });
+
+    await tx.product.createMany({
+      data: [
+        {
+          name: "CARNE COM QUEIJO",
+          description: "Pastel de Carne Moída com Queijo Coalho",
+          price: 11.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Carne Moída", "Queijo Coalho"],
+        },
+        {
+          name: "MEDALHÃO",
+          description: "Pastel de Mussarela, Carne Moída e Bacon",
+          price: 11.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Mussarela", "Carne Moída", "Bacon"],
+        },
+        {
+          name: "CAMARÃO",
+          description: "Pastel de queijo Coalho e Camarão",
+          price: 11.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Queijo Coalho", "Camarão"],
+        },
+        {
+          name: "JEITOSO",
+          description: "Pastel de Coalho, Frango, Calabresa Moída e Azeitona sem Caroço",
+          price: 11.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Coalho", "Frango", "Calabresa Moída", "Azeitona sem Caroço"],
+        },
+        {
+          name: "SERTANEJO",
+          description: "Pastel de queijo Coalho, Charque Moída e Azeitona sem Caroço",
+          price: 11.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Coalho", "Charque Moída", "Azeitona sem Caroço"],
+        },
+        {
+          name: "FRANGO COM QUEIJO",
+          description: "Pastel de queijo Frango e Coalho",
+          price: 11.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Frango", "Coalho"],
+        },
+      ],
+    });
+
+    // Categoria 4: Pastéis Especiais Premium
+    const pasteisEspeciaisPremiumCategory = await tx.menuCategory.create({
+      data: {
+        name: "Pastéis Especiais Premium",
+        restaurantId: restaurantSendai.id,
+      },
+    });
+
+    await tx.product.createMany({
+      data: [
+        {
+          name: "ESPECIAL DE CARNE",
+          description: "Pastel de Carne Moída, Azeitona sem Caroço, Tomate, Cebola, Ovo, Coalho, Chester e Orégano",
+          price: 15.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisPremiumCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Carne Moída", "Azeitona sem Caroço", "Tomate", "Cebola", "Ovo", "Coalho", "Chester", "Orégano"],
+        },
+        {
+          name: "ESPECIAL DE FRANGO",
+          description: "Pastel de queijo Prato, Frango, Bacon, Tomate, Cebola, Coalho",
+          price: 15.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisPremiumCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Prato", "Frango", "Bacon", "Tomate", "Cebola", "Coalho"],
+        },
+        {
+          name: "ESPECIAL DE BACALHAU",
+          description: "Pastel de Bacalhau com Cheiro Verde, Purê, Azeitona sem Caroço e Coalho",
+          price: 15.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisEspeciaisPremiumCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Bacalhau com Cheiro Verde", "Purê", "Azeitona sem Caroço", "Coalho"],
+        },
+      ],
+    });
+
+    // Categoria 5: Pastéis Doces Clássicos
+    const pasteisDocesClassicosCategory = await tx.menuCategory.create({
+      data: {
+        name: "Pastéis Doces Clássicos",
+        restaurantId: restaurantSendai.id,
+      },
+    });
+
+    await tx.product.createMany({
+      data: [
+        {
+          name: "ROMEU E JULIETA",
+          description: "Coalho e Goiabada",
+          price: 9.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisDocesClassicosCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Coalho", "Goiabada"],
+        },
+        {
+          name: "CARTOLA",
+          description: "Coalho, banana Frita e Açucar com Canela",
+          price: 9.0,
+          imageUrl: commonPasteisImageUrl,
+          menuCategoryId: pasteisDocesClassicosCategory.id,
+          restaurantId: restaurantSendai.id,
+          ingredients: ["Coalho", "banana Frita", "Açucar com Canela"],
+        },
+      ],
+    });
+
   });
 };
 
